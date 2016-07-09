@@ -8,6 +8,7 @@
 #include <boost/fusion/adapted/struct.hpp>
 #include <vector>
 #include <type_traits> // for static_assert
+#include <cassert>
 
 namespace TestTypes {
 
@@ -53,12 +54,54 @@ TEST(DeserializeTest, deserializerSelectionObject)
     static_assert(std::is_same<DeserializerType,cxxJson::detail::ObjectDeserializer<TestTypes::FooObject>>::value,"WrongType");
 }
 
+template<typename ScalarType>
+using ScalarDeserializer = cxxJson::detail::ScalarDeserializer<ScalarType>;
+
+TEST(DeserializeTest, deserializerScalarInt)
+{
+    boost::property_tree::ptree json;
+    int in = 5;
+    json.put("", in);
+    auto out = ScalarDeserializer<int>::deserialize(json);
+    assert(in==out);
+}
+
+TEST(DeserializeTest, deserializerScalarDouble)
+{
+    boost::property_tree::ptree json;
+    int in = 2.5;
+    json.put("", in);
+    auto out = ScalarDeserializer<double>::deserialize(json);
+    assert(in==out);
+}
+
+TEST(DeserializeTest, deserializerScalarBool)
+{
+    boost::property_tree::ptree json;
+    bool in = true;
+    json.put("", in);
+    auto out = ScalarDeserializer<bool>::deserialize(json);
+    assert(in==out);
+}
+
+TEST(DeserializeTest, deserializerScalarString)
+{
+    boost::property_tree::ptree json;
+    std::string in = "foo";
+    json.put("", in);
+    auto out = ScalarDeserializer<std::string>::deserialize(json);
+    assert(in==out);
+}
 
 int main()
 {
     TEST_RUN(DeserializeTest, deserializerSelectionScalar);
     TEST_RUN(DeserializeTest, deserializerSelectionArray);
     TEST_RUN(DeserializeTest, deserializerSelectionObject);
+    TEST_RUN(DeserializeTest, deserializerScalarInt);
+    TEST_RUN(DeserializeTest, deserializerScalarDouble);
+    TEST_RUN(DeserializeTest, deserializerScalarBool);
+    TEST_RUN(DeserializeTest, deserializerScalarString);
 
     return 0;
 }

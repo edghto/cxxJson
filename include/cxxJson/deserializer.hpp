@@ -12,10 +12,10 @@ template<typename S>
 struct ScalarDeserializer
 {
     template<typename J>
-    static inline S deserialize(J json)
+    static inline S deserialize(J& json)
     {
         std::cout << "ScalarDeserializer" << std::endl;
-        S s;
+        S s = json.template get<S>("");
         return s;
     }
 };
@@ -25,7 +25,7 @@ template<typename S>
 struct ArrayDeserializer
 {
     template<typename J>
-    static inline S deserialize(J json)
+    static inline S deserialize(J& json)
     {
         std::cout << "ArrayDeserializer" << std::endl;
         S s;
@@ -38,7 +38,7 @@ template<typename S>
 struct ObjectDeserializer
 {
     template<typename J>
-    static inline S deserialize(J json)
+    static inline S deserialize(J& json)
     {
         std::cout << "ObjectDeserializer" << std::endl;
         S s;
