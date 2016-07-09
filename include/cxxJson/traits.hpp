@@ -4,7 +4,7 @@
 #include <boost/fusion/adapted.hpp>
 
 namespace cxxJson {
-namespace Traits {
+namespace traits {
 
 template<typename S>
 struct isObject : std::integral_constant<bool, boost::fusion::traits::is_sequence<S>::value> {};
@@ -16,7 +16,7 @@ template<typename S>
 struct isArray<std::vector<S>> : std::true_type {};
 
 
-} // namespace Traits
+} // namespace traits
 } // namespace cxxJson
 
 

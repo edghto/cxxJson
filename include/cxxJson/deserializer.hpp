@@ -1,12 +1,10 @@
-#ifndef CXXJSON_HPP
-#define CXXJSON_HPP
+#ifndef CXXJSON_DESERIALIZER_HPP
+#define CXXJSON_DESERIALIZER_HPP
 
-#include <iostream>
 #include <type_traits>
-#include "traits.hpp"
+#include <cxxJson/traits.hpp>
 
 namespace cxxJson {
-
 namespace detail {
 
 
@@ -48,13 +46,10 @@ struct ObjectDeserializer
     }
 };
 
-template<bool Cond, typename Then, typename Else>
-using if_ = typename std::conditional<Cond, Then, Else>::type;
-
 template<typename S>
-using Deserializer = typename std::conditional<Traits::isObject<S>{},
+using Deserializer = typename std::conditional<traits::isObject<S>{},
                          ObjectDeserializer<S>,
-                         typename std::conditional<Traits::isArray<S>{},
+                         typename std::conditional<traits::isArray<S>{},
                              ArrayDeserializer<S>,
                              ScalarDeserializer<S>
                          >::type
@@ -62,18 +57,6 @@ using Deserializer = typename std::conditional<Traits::isObject<S>{},
 
 
 } // namespace detail
-
-template<typename S>
-struct Json
-{
-    template<typename J>
-    static inline S deserialize(J json)
-    {
-        return detail::Deserializer<S>::deserialize(json);
-    }
-};
-
 } // namespace cxxJson
 
-
-#endif // CXXJSON_HPP
+#endif // CXXJSON_DESERIALIZER_HPP

@@ -2,7 +2,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include "cxxJson.hpp"
+#include <cxxJson/cxxJson.hpp>
 
 
 #include <boost/fusion/adapted/struct.hpp>
