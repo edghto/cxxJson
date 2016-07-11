@@ -3,10 +3,13 @@
 
 #include <type_traits>
 #include <cxxJson/traits.hpp>
+#include <vector>
 
 namespace cxxJson {
 namespace detail {
 
+template<typename S>
+struct Deserializer;
 
 template<typename S>
 struct ScalarDeserializer
@@ -20,7 +23,6 @@ struct ScalarDeserializer
     }
 };
 
-
 template<typename S>
 struct ArrayDeserializer
 {
@@ -29,6 +31,10 @@ struct ArrayDeserializer
     {
         std::cout << "ArrayDeserializer" << std::endl;
         S s;
+        for(auto i : json)
+        {
+            s.push_back(Deserializer<typename S::value_type>::deserialize(i.second));
+        };
         return s;
     }
 };
@@ -46,14 +52,19 @@ struct ObjectDeserializer
     }
 };
 
+template<bool Cond, typename Then, typename Else>
+using if_ = typename std::conditional<Cond, Then, Else>::type;
+
 template<typename S>
-using Deserializer = typename std::conditional<traits::isObject<S>{},
+struct Deserializer : if_<traits::isObject<S>{},
                          ObjectDeserializer<S>,
-                         typename std::conditional<traits::isArray<S>{},
+                         if_<traits::isArray<S>{},
                              ArrayDeserializer<S>,
                              ScalarDeserializer<S>
-                         >::type
-                     >::type;
+                         >
+                     >
+{
+};
 
 
 } // namespace detail
