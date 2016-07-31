@@ -1,5 +1,5 @@
-#ifndef CXXJSON_HPP
-#define CXXJSON_HPP
+#ifndef CXXJSON_CXXJSON_HPP
+#define CXXJSON_CXXJSON_HPP
 
 #include <cxxJson/deserializer.hpp>
 
@@ -18,4 +18,4 @@ struct Json
 } // namespace cxxJson
 
 
-#endif // CXXJSON_HPP
+#endif // CXXJSON_CXXJSON_HPP

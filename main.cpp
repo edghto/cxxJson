@@ -19,6 +19,13 @@ struct FooObject
     int i;
     bool b;
     std::string str;
+
+    bool operator ==(const FooObject& that)
+    {
+        return i == that.i
+                && b == that.b
+                && str == that.str;
+    }
 };
 
 using FooArray = std::vector<int>;
@@ -116,6 +123,20 @@ TEST(DeserializeTest, deserializerArray)
     assert(out == std::vector<int>({1,2,3}));
 }
 
+template<typename ObjectType>
+using ObjectDeserializer = cxxJson::detail::ObjectDeserializer<ObjectType>;
+
+TEST(DeserializeTest, deserializerObject)
+{
+    ptree json;
+    json.push_back(getChild(5));
+    json.push_back(getChild(true));
+    json.push_back(getChild("str"));
+    auto out = ObjectDeserializer<TestTypes::FooObject>::deserialize(json);
+    TestTypes::FooObject expected{5, true, "str"};
+    assert(out == expected);
+}
+
 int main()
 {
     TEST_RUN(DeserializeTest, deserializerSelectionScalar);
@@ -126,6 +147,7 @@ int main()
     TEST_RUN(DeserializeTest, deserializerScalarBool);
     TEST_RUN(DeserializeTest, deserializerScalarString);
     TEST_RUN(DeserializeTest, deserializerArray);
+    TEST_RUN(DeserializeTest, deserializerObject);
 
     return 0;
 }

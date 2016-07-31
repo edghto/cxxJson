@@ -1,7 +1,6 @@
 #ifndef CXXJSON_DESERIALIZER_HPP
 #define CXXJSON_DESERIALIZER_HPP
 
-#include <type_traits>
 #include <cxxJson/traits.hpp>
 #include <vector>
 
@@ -43,22 +42,37 @@ struct ArrayDeserializer
 template<typename S>
 struct ObjectDeserializer
 {
+    template<typename Json>
+    struct Impl
+    {
+        Impl(Json& json)
+            : json_(json) {}
+
+        template<typename T>
+        void operator()(const char* n, T& t)
+        {
+            t = json_.template get<T>(n);
+        }
+
+        Json& json_;
+    };
+
     template<typename J>
     static inline S deserialize(J& json)
     {
         std::cout << "ObjectDeserializer" << std::endl;
         S s;
+        Impl<J> impl(json);
+        traits::Iterate<S>::for_each(s, impl);
         return s;
     }
 };
 
-template<bool Cond, typename Then, typename Else>
-using if_ = typename std::conditional<Cond, Then, Else>::type;
 
 template<typename S>
-struct Deserializer : if_<traits::isObject<S>{},
+struct Deserializer : traits::if_<traits::isObject<S>{},
                          ObjectDeserializer<S>,
-                         if_<traits::isArray<S>{},
+                         traits::if_<traits::isArray<S>{},
                              ArrayDeserializer<S>,
                              ScalarDeserializer<S>
                          >
