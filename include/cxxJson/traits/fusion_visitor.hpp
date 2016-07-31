@@ -2,6 +2,7 @@
 #define CXXJSON_TRAITS_FUSIONVISITOR_HPP
 
 #include <boost/fusion/adapted.hpp>
+#include <boost/fusion/include/sequence.hpp>
 #include <boost/mpl/next.hpp>
 
 namespace cxxJson {
@@ -15,17 +16,17 @@ struct FusionVisitorImpl
     using next_t = typename boost::mpl::next<N>::type;
     using name_t = boost::fusion::extension::struct_member_name<Struct, N::value>;
 
-    static inline void visit(const Struct& s, Functor& f)
+    static inline void visit(Struct& s, Functor& f)
     {
         f(name_t::call(), boost::fusion::at<N>(s));
-        FusionVisitorImpl<Struct, Functor, next_t>(s, f);
+        FusionVisitorImpl<Struct, Functor, next_t>::visit(s, f);
     }
 };
 
 template <typename Struct, typename Functor>
 struct FusionVisitorImpl<Struct, Functor, typename boost::fusion::result_of::size<Struct>::type>
 {
-    static inline void visit(const Struct&, Functor&) {}
+    static inline void visit(Struct&, Functor&) {}
 };
 
 } // namespace detail

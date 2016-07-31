@@ -106,10 +106,10 @@ template<typename ArrayType>
 using ArrayDeserializer = cxxJson::detail::ArrayDeserializer<ArrayType>;
 
 template<typename T>
-inline auto getChild(const T& t)
+inline auto getChild(const T& t, std::string n = "")
 {
     ptree p;
-    p.put("", t);
+    p.put(n, t);
     return std::make_pair("",p);
 }
 
@@ -129,9 +129,9 @@ using ObjectDeserializer = cxxJson::detail::ObjectDeserializer<ObjectType>;
 TEST(DeserializeTest, deserializerObject)
 {
     ptree json;
-    json.push_back(getChild(5));
-    json.push_back(getChild(true));
-    json.push_back(getChild("str"));
+    json.push_back(getChild(5, "i"));
+    json.push_back(getChild(true, "b"));
+    json.push_back(getChild("str", "str"));
     auto out = ObjectDeserializer<TestTypes::FooObject>::deserialize(json);
     TestTypes::FooObject expected{5, true, "str"};
     assert(out == expected);

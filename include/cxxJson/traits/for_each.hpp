@@ -11,9 +11,9 @@ template<typename Struct>
 struct Iterate
 {
     template<typename Functor>
-    static inline void for_each(const Struct& s, Functor&& f)
+    static inline void for_each(Struct& s, Functor&& f)
     {
-        FusionVisitor<Struct, Functor>::visit(s, std::forward(f));
+        FusionVisitor<Struct, Functor>::visit(s, std::forward<Functor>(f));
     }
 };
 

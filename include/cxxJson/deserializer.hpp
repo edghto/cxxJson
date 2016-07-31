@@ -51,6 +51,7 @@ struct ObjectDeserializer
         template<typename T>
         void operator()(const char* n, T& t)
         {
+            std::cout << typeid(T).name() << " " << n << std::endl;
             t = json_.template get<T>(n);
         }
 
