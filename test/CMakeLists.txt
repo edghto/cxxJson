@@ -2,7 +2,7 @@ project(cxxJson)
 cmake_minimum_required(VERSION 2.8)
 
 
-include_directories(include)
+include_directories(include .)
 
 include_directories(${gmock_source_dir}/include)
 include_directories(${gmock_source_dir}/gtest/include)
