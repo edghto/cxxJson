@@ -32,7 +32,7 @@ struct ArraySerializer
         J json;
         for(auto item : s)
         {
-            json.push_back(std::make_pair("",Serializer<S,J>::serialize(item)));
+            json.push_back(std::make_pair("",Serializer<typename S::value_type,J>::serialize(item)));
         };
         return json;
     }
