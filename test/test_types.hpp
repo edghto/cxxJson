@@ -21,6 +21,20 @@ struct FooObject
     }
 };
 
+struct BarObject
+{
+    double d;
+    std::vector<int> a;
+    FooObject foo;
+
+    bool operator ==(const BarObject& that) const
+    {
+        return d == that.d
+                && a == that.a
+                && foo == that.foo;
+    }
+};
+
 using FooArray = std::vector<int>;
 using FooScalar = int;
 
@@ -31,6 +45,13 @@ BOOST_FUSION_ADAPT_STRUCT(
     (int, i)
     (bool, b)
     (std::string, str)
+);
+
+BOOST_FUSION_ADAPT_STRUCT(
+    TestTypes::BarObject,
+    (double, d)
+    (std::vector<int>, a)
+    (TestTypes::FooObject, foo)
 );
 
 #endif // CXXJSON_TEST_TESTTYPES_HPP

@@ -52,7 +52,7 @@ struct ObjectDeserializer
         void operator()(const char* n, T& t)
         {
             std::cout << typeid(T).name() << " " << n << std::endl;
-            t = json_.template get<T>(n);
+            t = Deserializer<T>::deserialize(json_.get_child(n));
         }
 
         Json& json_;
