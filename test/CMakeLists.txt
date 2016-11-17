@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 2.8)
 include_directories(include .)
 
 include_directories(${gmock_source_dir}/include)
-include_directories(${gmock_source_dir}/gtest/include)
+include_directories(${gtest_source_dir}/include)
 link_directories(${gmock_binary_dir})
 
 file(GLOB_RECURSE TEST_SRC *.cpp *.hpp ../include/*.hpp)
