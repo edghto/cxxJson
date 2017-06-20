@@ -2,6 +2,7 @@
 #define CXXJSON_SERIALIZER_HPP
 
 #include <cxxJson/traits.hpp>
+#include <cxxJson/adapters/adapter.hpp>
 #include <vector>
 
 namespace cxxJson {
@@ -18,7 +19,7 @@ struct ScalarSerializer
         std::cout << "ScalarSerializer" << std::endl;
 
         J json;
-        json.put("", s);
+        adapters::setScalar(json, s);
         return json;
     }
 };
@@ -32,7 +33,7 @@ struct ArraySerializer
         J json;
         for(auto item : s)
         {
-            json.push_back(std::make_pair("",Serializer<typename S::value_type,J>::serialize(item)));
+            adapters::appendArray(json, Serializer<typename S::value_type,J>::serialize(item));
         };
         return json;
     }
@@ -53,7 +54,7 @@ struct ObjectSerializer
         {
             std::cout << typeid(T).name() << " " << n << std::endl;
             auto item = Serializer<T,J>::serialize(t);
-            json_.push_back(std::make_pair(n, item));
+            adapters::setObjectMember(json_, n, item);
         }
 
         Json& json_;

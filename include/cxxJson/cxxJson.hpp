@@ -1,10 +1,9 @@
 #ifndef CXXJSON_CXXJSON_HPP
 #define CXXJSON_CXXJSON_HPP
 
+#include <cxxJson/adapters/adapter.hpp>
 #include <cxxJson/deserializer.hpp>
 #include <cxxJson/serializer.hpp>
-
-#include <boost/property_tree/ptree.hpp>
 
 namespace cxxJson {
 
@@ -13,9 +12,6 @@ static inline S deserialize(J json)
 {
     return detail::Deserializer<S>::deserialize(json);
 }
-
-
-using Json = boost::property_tree::ptree;
 
 template<typename S>
 static inline Json serialize(S s)

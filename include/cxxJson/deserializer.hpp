@@ -2,6 +2,7 @@
 #define CXXJSON_DESERIALIZER_HPP
 
 #include <cxxJson/traits.hpp>
+#include <cxxJson/adapters/adapter.hpp>
 #include <vector>
 
 namespace cxxJson {
@@ -17,7 +18,7 @@ struct ScalarDeserializer
     static inline S deserialize(J& json)
     {
         std::cout << "ScalarDeserializer" << std::endl;
-        S s = json.template get<S>("");
+        S s = adapters::getScalar<S>(json);
         return s;
     }
 };
@@ -30,10 +31,9 @@ struct ArrayDeserializer
     {
         std::cout << "ArrayDeserializer" << std::endl;
         S s;
-        for(auto i : json)
-        {
-            s.push_back(Deserializer<typename S::value_type>::deserialize(i.second));
-        };
+        adapters::iterateArray(json, [&s](auto& item){
+            s.push_back(Deserializer<typename S::value_type>::deserialize(item));
+        });
         return s;
     }
 };
@@ -52,7 +52,7 @@ struct ObjectDeserializer
         void operator()(const char* n, T& t)
         {
             std::cout << typeid(T).name() << " " << n << std::endl;
-            t = Deserializer<T>::deserialize(json_.get_child(n));
+            t = Deserializer<T>::deserialize(adapters::getObjectMember(json_, n));
         }
 
         Json& json_;
