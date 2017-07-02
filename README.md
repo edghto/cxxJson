@@ -5,7 +5,8 @@ Highly inspired by piece of code written by my colleague in one of latests proje
 Main purpose of this was to have fun with c++ template metaprogramming. 
 
 ## Limitations
-* supports only boost::property_tree::ptree as json parser
+* by default supports only boost::property_tree::ptree as json parser, but you can extend for other json parsers, for details check files [adapter.hpp](include/cxxJson/adapters/adapter.hpp) and [boostptree.hpp](include/cxxJson/adapters/boostptree.hpp)
+* only one json parser per project
 * array can contain only elements of the same type
 
 ## Example
