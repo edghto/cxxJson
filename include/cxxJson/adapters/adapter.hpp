@@ -26,8 +26,8 @@ inline void setObjectMember(Json& json, Member& m, ValueType& item);
 } // namespace cxxJson
 
 
-#if 1 ||defined(WITH_RAPIDJSON)
-#include <cxxJson/adapters/rapidjson.hpp>
+#if defined(WITH_BOOSTPTREE)
+#include <cxxJson/adapters/boostptree.hpp>
 #endif
 
 

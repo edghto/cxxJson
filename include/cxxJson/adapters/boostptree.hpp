@@ -1,5 +1,5 @@
-#ifndef CXXJSON_ADAPTERS_RAPIDJSON_HPP
-#define CXXJSON_ADAPTERS_RAPIDJSON_HPP
+#ifndef CXXJSON_ADAPTERS_BOOSTPTREE_HPP
+#define CXXJSON_ADAPTERS_BOOSTPTREE_HPP
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -45,10 +45,10 @@ inline void setObjectMember(Json& json, Member& m, ValueType& item)
     json.push_back(std::make_pair(m, item));
 }
 
-} // namespace adaptersusing
+} // namespace adapters
 
 using Json = boost::property_tree::ptree;
 
 } // namespace cxxJson
 
-#endif // CXXJSON_ADAPTERS_RAPIDJSON_HPP
+#endif // CXXJSON_ADAPTERS_BOOSTPTREE_HPP
