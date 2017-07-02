@@ -52,7 +52,8 @@ struct ObjectDeserializer
         void operator()(const char* n, T& t)
         {
             std::cout << typeid(T).name() << " " << n << std::endl;
-            t = Deserializer<T>::deserialize(adapters::getObjectMember(json_, n));
+            auto member = adapters::getObjectMember(json_, n);
+            t = Deserializer<T>::deserialize(member);
         }
 
         Json& json_;
