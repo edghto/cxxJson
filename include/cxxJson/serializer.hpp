@@ -16,8 +16,6 @@ struct ScalarSerializer
 {
     static inline J serialize(S& s)
     {
-        std::cout << "ScalarSerializer" << std::endl;
-
         J json;
         adapters::setScalar(json, s);
         return json;
@@ -29,7 +27,6 @@ struct ArraySerializer
 {
     static inline J serialize(S& s)
     {
-        std::cout << "ArraySerializer" << std::endl;
         J json;
         for(auto item : s)
         {
@@ -52,7 +49,6 @@ struct ObjectSerializer
         template<typename T>
         void operator()(const char* n, T& t)
         {
-            std::cout << typeid(T).name() << " " << n << std::endl;
             auto item = Serializer<T,J>::serialize(t);
             adapters::setObjectMember(json_, n, item);
         }
@@ -62,7 +58,6 @@ struct ObjectSerializer
 
     static inline J serialize(S& s)
     {
-        std::cout << "ObjectSerializer" << std::endl;
         J json;
         Impl<J> impl(json);
         traits::Iterate<S>::for_each(s, impl);

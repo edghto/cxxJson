@@ -10,7 +10,6 @@ using namespace ::testing;
 template<typename ObjectType>
 using ObjectDeserializer = cxxJson::detail::ObjectDeserializer<ObjectType>;
 
-#include <iostream>
 TEST(ObjectDeserializerTest, basic)
 {
     boost::property_tree::ptree json;

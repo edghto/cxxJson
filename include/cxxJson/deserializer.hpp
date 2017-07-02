@@ -17,7 +17,6 @@ struct ScalarDeserializer
     template<typename J>
     static inline S deserialize(J& json)
     {
-        std::cout << "ScalarDeserializer" << std::endl;
         S s = adapters::getScalar<S>(json);
         return s;
     }
@@ -29,7 +28,6 @@ struct ArrayDeserializer
     template<typename J>
     static inline S deserialize(J& json)
     {
-        std::cout << "ArrayDeserializer" << std::endl;
         S s;
         adapters::iterateArray(json, [&s](auto& item){
             s.push_back(Deserializer<typename S::value_type>::deserialize(item));
@@ -51,7 +49,6 @@ struct ObjectDeserializer
         template<typename T>
         void operator()(const char* n, T& t)
         {
-            std::cout << typeid(T).name() << " " << n << std::endl;
             auto member = adapters::getObjectMember(json_, n);
             t = Deserializer<T>::deserialize(member);
         }
@@ -62,7 +59,6 @@ struct ObjectDeserializer
     template<typename J>
     static inline S deserialize(J& json)
     {
-        std::cout << "ObjectDeserializer" << std::endl;
         S s;
         Impl<J> impl(json);
         traits::Iterate<S>::for_each(s, impl);
