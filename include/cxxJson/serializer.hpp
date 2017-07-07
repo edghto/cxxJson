@@ -4,9 +4,19 @@
 #include <cxxJson/traits.hpp>
 #include <cxxJson/adapters/adapter.hpp>
 #include <vector>
+#include <boost/optional.hpp>
 
 namespace cxxJson {
 namespace detail {
+
+class OptionalField
+    : public std::runtime_error
+{
+public:
+    OptionalField(std::string msg = "Missing optional field")
+        : std::runtime_error(msg)
+    {}
+};
 
 template<typename S, typename J>
 struct Serializer;
@@ -18,6 +28,20 @@ struct ScalarSerializer
     {
         J json;
         adapters::setScalar(json, s);
+        return json;
+    }
+};
+
+template<typename S, typename J>
+struct ScalarSerializer<boost::optional<S>,J>
+{
+    static inline J serialize(boost::optional<S>& s)
+    {
+        if(!s.is_initialized())
+            throw OptionalField{};
+
+        J json;
+        adapters::setScalar(json, s.get());
         return json;
     }
 };
@@ -49,8 +73,15 @@ struct ObjectSerializer
         template<typename T>
         void operator()(const char* n, T& t)
         {
-            auto item = Serializer<T,J>::serialize(t);
-            adapters::setObjectMember(json_, n, item);
+            try
+            {
+                auto item = Serializer<T,J>::serialize(t);
+                adapters::setObjectMember(json_, n, item);
+            }
+            catch(OptionalField& )
+            {
+                // nothing, just keep going
+            }
         }
 
         Json& json_;
@@ -65,6 +96,44 @@ struct ObjectSerializer
     }
 };
 
+
+template<typename S, typename J>
+struct ObjectSerializer<boost::optional<S>, J>
+{
+    template<typename Json>
+    struct Impl
+    {
+        Impl(Json& json)
+            : json_(json) {}
+
+        template<typename T>
+        void operator()(const char* n, T& t)
+        {
+            try
+            {
+                auto item = Serializer<T,J>::serialize(t);
+                adapters::setObjectMember(json_, n, item);
+            }
+            catch(OptionalField& )
+            {
+                // nothing, just keep going
+            }
+        }
+
+        Json& json_;
+    };
+
+    static inline J serialize(boost::optional<S>& s)
+    {
+        if(!s.is_initialized())
+            throw OptionalField{};
+
+        J json;
+        Impl<J> impl(json);
+        traits::Iterate<S>::for_each(s.get(), impl);
+        return json;
+    }
+};
 
 template<typename S, typename J>
 struct Serializer : traits::if_<traits::isObject<S>{},

@@ -2,6 +2,7 @@
 #define CXXJSON_TEST_TESTTYPES_HPP
 
 #include <boost/fusion/adapted/struct.hpp>
+#include <boost/optional.hpp>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,15 @@ struct FooObject
                 && b == that.b
                 && str == that.str;
     }
+};
+
+struct BooObjectWithOptional
+{
+    int i;
+    boost::optional<int> opt_i;
+
+    FooObject foo;
+    boost::optional<FooObject> opt_foo;
 };
 
 struct BarObject
@@ -45,6 +55,14 @@ BOOST_FUSION_ADAPT_STRUCT(
     (int, i)
     (bool, b)
     (std::string, str)
+);
+
+BOOST_FUSION_ADAPT_STRUCT(
+    TestTypes::BooObjectWithOptional,
+    (int, i)
+    (boost::optional<int>, opt_i)
+    (TestTypes::FooObject, foo)
+    (boost::optional<TestTypes::FooObject>, opt_foo)
 );
 
 BOOST_FUSION_ADAPT_STRUCT(

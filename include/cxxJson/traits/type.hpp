@@ -1,6 +1,7 @@
 #ifndef CXXJSON_TRAITS_TYPE_HPP
 #define CXXJSON_TRAITS_TYPE_HPP
 
+#include <boost/optional.hpp>
 #include <boost/fusion/adapted.hpp>
 #include <type_traits>
 
@@ -9,6 +10,10 @@ namespace traits {
 
 template<typename S>
 struct isObject : std::integral_constant<bool, boost::fusion::traits::is_sequence<S>::value> {};
+
+template<typename S>
+struct isObject<boost::optional<S>>
+    : std::integral_constant<bool, boost::fusion::traits::is_sequence<S>::value> {};
 
 template<typename S>
 struct isArray : std::false_type {};
