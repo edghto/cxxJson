@@ -1,8 +1,17 @@
 #ifndef CXXJSON_ADAPTERS_ADAPTER_HPP
 #define CXXJSON_ADAPTERS_ADAPTER_HPP
 
+#include <stdexcept>
+#include <string>
+
 namespace cxxJson {
 namespace adapters {
+
+class MemberNotFound : public std::runtime_error
+{
+public:
+    MemberNotFound(const std::string& msg) : std::runtime_error(msg) {}
+};
 
 template<typename ValueType, typename Json>
 inline ValueType getScalar(const Json& json);
@@ -16,6 +25,9 @@ inline void iterateArray(const Json& json, Functor f);
 template<typename Json>
 inline void appendArray(Json& json, const Json& item);
 
+/**
+ * Throws MemberNotFound
+ */
 template<typename Json, typename Member>
 inline Json getObjectMember(const Json& json, const Member& m);
 

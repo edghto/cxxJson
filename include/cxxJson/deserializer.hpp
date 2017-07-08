@@ -5,6 +5,8 @@
 #include <cxxJson/adapters/adapter.hpp>
 #include <vector>
 
+#include <boost/optional.hpp>
+
 namespace cxxJson {
 namespace detail {
 
@@ -21,6 +23,18 @@ struct ScalarDeserializer
         return s;
     }
 };
+
+template<typename S>
+struct ScalarDeserializer<boost::optional<S>>
+{
+    template<typename J>
+    static inline boost::optional<S> deserialize(J& json)
+    {
+        boost::optional<S> s = adapters::getScalar<S>(json);
+        return s;
+    }
+};
+
 
 template<typename S>
 struct ArrayDeserializer
@@ -49,8 +63,15 @@ struct ObjectDeserializer
         template<typename T>
         void operator()(const char* n, T& t)
         {
-            auto member = adapters::getObjectMember(json_, n);
-            t = Deserializer<T>::deserialize(member);
+            try
+            {
+                auto member = adapters::getObjectMember(json_, n);
+                t = Deserializer<T>::deserialize(member);
+            }
+            catch(adapters::MemberNotFound& )
+            {
+
+            }
         }
 
         Json& json_;
@@ -66,6 +87,41 @@ struct ObjectDeserializer
     }
 };
 
+template<typename S>
+struct ObjectDeserializer<boost::optional<S>>
+{
+    template<typename Json>
+    struct Impl
+    {
+        Impl(Json& json)
+            : json_(json) {}
+
+        template<typename T>
+        void operator()(const char* n, T& t)
+        {
+            try
+            {
+                auto member = adapters::getObjectMember(json_, n);
+                t = Deserializer<T>::deserialize(member);
+            }
+            catch(adapters::MemberNotFound& )
+            {
+
+            }
+        }
+
+        Json& json_;
+    };
+
+    template<typename J>
+    static inline boost::optional<S> deserialize(J& json)
+    {
+        S s;
+        Impl<J> impl(json);
+        traits::Iterate<S>::for_each(s, impl);
+        return s;
+    }
+};
 
 template<typename S>
 struct Deserializer : traits::if_<traits::isObject<S>{},

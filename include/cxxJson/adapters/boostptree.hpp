@@ -36,6 +36,9 @@ inline void appendArray(Json& json, const Json& item)
 template<typename Json, typename Member>
 inline Json getObjectMember(const Json& json, const Member& m)
 {
+    if(!json.count(m))
+        throw MemberNotFound(m);
+
     return json.get_child(m);
 }
 
